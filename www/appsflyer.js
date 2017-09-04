@@ -79,9 +79,8 @@
             exec(null, null, "AppsFlyerPlugin", "trackEvent", [eventName, eventValue]);
         };
 
-        AppsFlyer.prototype.enableUninstallTracking = function (gcmProjectNumber,successCB, errorCB) {
-            argscheck.checkArgs('S', 'AppsFlyer.enableUninstallTracking', arguments);
-            exec(successCB, errorCB, "AppsFlyerPlugin", "enableUninstallTracking", [gcmProjectNumber]);
+        AppsFlyer.prototype.enableUninstallTracking = function (deviceToken, successCB, errorCB) {
+            exec(successCB, errorCB, "AppsFlyerPlugin", "enableUninstallTracking", [deviceToken]);
         };
 
 
