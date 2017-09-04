@@ -28,7 +28,9 @@
     <keywords>cordova,appsflyer</keywords>
     <repo>https://github.com/AppsFlyerSDK/cordova-plugin-appsflyer-sdk.git</repo>
     <engines>
-        <engine name="cordova" version=">=4.3.0"/>
+        <engine name="cordova" version=">=6.0.0"/>
+        <engine name="cordova-android" version=">=6.0.0"/>
+        <engine name="cordova-ios" version=">=4.3.0"/>
     </engines>
 
     <js-module src="www/appsflyer.js" name="appsflyer">
