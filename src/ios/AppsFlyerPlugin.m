@@ -208,37 +208,22 @@ static NSString *const SUCCESS         = @"Success";
 
 
 -(void) handleCallback:(NSDictionary *) message{
-    NSError *error;
+    NSString* status = (NSString*)[message objectForKey: @"status"];
 
-    NSData *jsonMessage = [NSJSONSerialization dataWithJSONObject:message
-                                                          options:0
-                                                            error:&error];
-    if (jsonMessage) {
-        NSString *jsonMessageStr = [[NSString alloc] initWithBytes:[jsonMessage bytes] length:[jsonMessage length] encoding:NSUTF8StringEncoding];
-
-        NSString* status = (NSString*)[message objectForKey: @"status"];
-
-        if([status isEqualToString:afSuccess]){
-            [self reportOnSuccess:jsonMessageStr];
-        }
-        else{
-            [self reportOnFailure:jsonMessageStr];
-        }
-
-        NSLog(@"jsonMessageStr = %@",jsonMessageStr);
-    } else {
-        NSLog(@"%@",error);
+    if([status isEqualToString:afSuccess]){
+        [self reportOnSuccess:message];
+    } else{
+        [self reportOnFailure:message];
     }
 }
 
--(void) reportOnFailure:(NSString *)errorMessage {
-
+-(void) reportOnFailure:(NSDictionary *)errorMessage {
     if (mConversionListenerOnResume != nil) {
         mConversionListenerOnResume = nil;
     }
 
-    if(mConversionListener != nil){
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:errorMessage];
+    if (mConversionListener) {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:errorMessage];
         [pluginResult setKeepCallback:[NSNumber numberWithBool:NO]];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:mConversionListener];
 
@@ -246,23 +231,22 @@ static NSString *const SUCCESS         = @"Success";
     }
 }
 
--(void) reportOnSuccess:(NSString *)data {
-
-    if (mConversionListenerOnResume != nil) {
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:data];
+-(void) reportOnSuccess:(NSDictionary *)data {
+    if (mConversionListenerOnResume) {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:data];
         [pluginResult setKeepCallback:[NSNumber numberWithBool:NO]];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:mConversionListenerOnResume];
 
         mConversionListenerOnResume = nil;
     }
 
-    if(mConversionListener != nil){
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:data];
+    if (mConversionListener) {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:data];
         [pluginResult setKeepCallback:[NSNumber numberWithBool:NO]];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:mConversionListener];
 
         mConversionListener = nil;
-     }
+    }
 }
 - (void) handleOpenUrl:(CDVInvokedUrlCommand*)command {
     NSURL *url = [NSURL URLWithString:
