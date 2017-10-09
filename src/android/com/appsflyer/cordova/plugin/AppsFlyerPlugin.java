@@ -27,6 +27,7 @@ import static com.appsflyer.cordova.plugin.AppsFlyerConstants.*;
 public class AppsFlyerPlugin extends CordovaPlugin {
 
 	private CallbackContext mConversionListener = null;
+	private String gcmProjectId = null;
 
 	@Override
 	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -307,31 +308,27 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 
 	@Deprecated
 	private boolean setGCMProjectNumber(JSONArray parameters) {
-		String gcmProjectId = null;
 		try {
-			gcmProjectId = parameters.getString(0);
+			this.gcmProjectId = parameters.getString(0);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		if(gcmProjectId == null || gcmProjectId.length()==0){
+		if(this.gcmProjectId == null || this.gcmProjectId.length()==0){
 			return true;//TODO error
 		}
 		Context c = this.cordova.getActivity().getApplicationContext();
-		AppsFlyerLib.getInstance().setGCMProjectNumber(c, gcmProjectId);
+		AppsFlyerLib.getInstance().setGCMProjectNumber(c, this.gcmProjectId);
 		return true;
 	}
 
 	private boolean enableUninstallTracking(JSONArray parameters, CallbackContext callbackContext){
-
-		String gcmProjectNumber = parameters.optString(0);
-
-		if(gcmProjectNumber == null || gcmProjectNumber.length()==0){
+		if(this.gcmProjectId == null || this.gcmProjectId.length()==0){
 			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, NO_GCM_PROJECT_NUMBER_PROVIDED));
 			return true;
 		}
 
-		AppsFlyerLib.getInstance().enableUninstallTracking(gcmProjectNumber);
+		AppsFlyerLib.getInstance().enableUninstallTracking(this.gcmProjectId);
 		callbackContext.success(SUCCESS);
 		return true;
 	}

@@ -147,7 +147,7 @@ static NSString *const SUCCESS         = @"Success";
 
 }
 
-- (void)registerUninstall:(CDVInvokedUrlCommand*)command {
+- (void)enableUninstallTracking:(CDVInvokedUrlCommand*)command {
 
     NSData* token = [command.arguments objectAtIndex:0];
     NSString *deviceToken = [NSString stringWithFormat:@"%@",token];

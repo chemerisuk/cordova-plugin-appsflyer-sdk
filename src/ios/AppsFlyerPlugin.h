@@ -13,7 +13,7 @@
 - (void)onConversionDataReceived:(NSDictionary*) installData;
 - (void)onConversionDataRequestFailure:(NSError *) error;
 - (void)trackEvent:(CDVInvokedUrlCommand*)command;
-- (void)registerUninstall:(CDVInvokedUrlCommand*)command;
+- (void)enableUninstallTracking:(CDVInvokedUrlCommand*)command;
 - (void)handleOpenUrl:(CDVInvokedUrlCommand *)url;
 @end
 
