@@ -79,29 +79,22 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 	 * @param args
 	 * @param callbackContext
      */
-	private boolean initSdk(final JSONArray args, final CallbackContext callbackContext) {
-		boolean isConversionData;
-		boolean isDebug = false;
-
+	private boolean initSdk(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
 		AppsFlyerProperties.getInstance().set(AppsFlyerProperties.LAUNCH_PROTECT_ENABLED, false);
 		AppsFlyerLib instance = AppsFlyerLib.getInstance();
 
-		try{
-			final JSONObject options = args.getJSONObject(0);
-			String devKey = options.optString(AF_DEV_KEY, "").trim();
-			isConversionData = options.optBoolean(AF_CONVERSION_DATA, false);
+		final JSONObject options = args.getJSONObject(0);
+		String devKey = options.optString(AF_DEV_KEY, "").trim();
+		boolean isConversionData = options.optBoolean(AF_CONVERSION_DATA, false);
+		boolean isDebug = options.optBoolean(AF_IS_DEBUG, false);
 
-			if(devKey.equals("")){
-				callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, NO_DEVKEY_FOUND));
-				return;
-			}
-
+		if(devKey.equals("")){
+			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, NO_DEVKEY_FOUND));
+		} else {
 			String senderId = options.optString(AF_SENDER_ID, "").trim();
 			if(!senderId.equals("")){
 				instance.enableUninstallTracking(senderId);
 			}
-
-			isDebug = options.optBoolean(AF_IS_DEBUG, false);
 
 			instance.setDebugLog(isDebug);
 
@@ -112,7 +105,6 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 
 
 			if(isConversionData == true){
-
 				if(mConversionListener == null){
 					mConversionListener = callbackContext;
 				}
@@ -123,10 +115,6 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			else{
 				callbackContext.success(SUCCESS);
 			}
-
-		}
-		catch (JSONException e){
-			e.printStackTrace();
 		}
 
 		return true;
