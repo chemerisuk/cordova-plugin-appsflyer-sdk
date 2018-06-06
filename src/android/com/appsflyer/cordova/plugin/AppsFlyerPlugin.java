@@ -27,12 +27,6 @@ import static com.appsflyer.cordova.plugin.AppsFlyerConstants.*;
 public class AppsFlyerPlugin extends CordovaPlugin {
 
 	private CallbackContext mConversionListener = null;
-	private String gcmProjectId = null;
-
-	@Override
-	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-		super.initialize(cordova, webView);
-	}
 
 	/**
 	 * Called when the activity receives a new intent.
@@ -65,12 +59,12 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		else if ("trackEvent".equals(action)) {
 			return trackEvent(args, callbackContext);
 		}
-		else if ("setGCMProjectID".equals(action)) {
-			return setGCMProjectNumber(args);
+		else if ("setSenderId".equals(action)) {
+			return setSenderId(args, callbackContext);
 		}
-		else if("enableUninstallTracking".equals(action))
+		else if("updateServerUninstallToken".equals(action))
 		{
-			return enableUninstallTracking(args, callbackContext);
+			return updateServerUninstallToken(args, callbackContext);
 		}
 
 		return false;
@@ -306,29 +300,17 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		return newMap;
 	}
 
-	@Deprecated
-	private boolean setGCMProjectNumber(JSONArray parameters) {
-		try {
-			this.gcmProjectId = parameters.getString(0);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		if(this.gcmProjectId == null || this.gcmProjectId.length()==0){
-			return true;//TODO error
-		}
-		Context c = this.cordova.getActivity().getApplicationContext();
-		AppsFlyerLib.getInstance().setGCMProjectNumber(c, this.gcmProjectId);
+	private boolean setSenderId(JSONArray parameters, CallbackContext callbackContext) throws JSONException {
+		String senderId = parameters.getString(0);
+		AppsFlyerLib.getInstance().enableUninstallTracking(senderId);
+		callbackContext.success(SUCCESS);
 		return true;
 	}
 
-	private boolean enableUninstallTracking(JSONArray parameters, CallbackContext callbackContext){
-		if(this.gcmProjectId == null || this.gcmProjectId.length()==0){
-			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, NO_GCM_PROJECT_NUMBER_PROVIDED));
-			return true;
-		}
-
-		AppsFlyerLib.getInstance().enableUninstallTracking(this.gcmProjectId);
+	private boolean updateServerUninstallToken(JSONArray parameters, CallbackContext callbackContext) throws JSONException {
+		String token = parameters.getString(0);
+		Context c = this.cordova.getActivity().getApplicationContext();
+		AppsFlyerLib.getInstance().updateServerUninstallToken(c, token);
 		callbackContext.success(SUCCESS);
 		return true;
 	}
