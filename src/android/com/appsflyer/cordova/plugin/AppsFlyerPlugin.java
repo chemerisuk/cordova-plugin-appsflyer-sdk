@@ -59,9 +59,6 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		else if ("trackEvent".equals(action)) {
 			return trackEvent(args, callbackContext);
 		}
-		else if ("setSenderId".equals(action)) {
-			return setSenderId(args, callbackContext);
-		}
 		else if("updateServerUninstallToken".equals(action))
 		{
 			return updateServerUninstallToken(args, callbackContext);
@@ -83,9 +80,6 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 	 * @param callbackContext
      */
 	private boolean initSdk(final JSONArray args, final CallbackContext callbackContext) {
-
-
-		String devKey = null;
 		boolean isConversionData;
 		boolean isDebug = false;
 
@@ -94,12 +88,17 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 
 		try{
 			final JSONObject options = args.getJSONObject(0);
-
-			devKey = options.optString(AF_DEV_KEY, "");
+			String devKey = options.optString(AF_DEV_KEY, "").trim();
 			isConversionData = options.optBoolean(AF_CONVERSION_DATA, false);
 
-			if(devKey.trim().equals("")){
+			if(devKey.equals("")){
 				callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, NO_DEVKEY_FOUND));
+				return;
+			}
+
+			String senderId = options.optString(AF_SENDER_ID, "").trim();
+			if(!senderId.equals("")){
+				instance.enableUninstallTracking(senderId);
 			}
 
 			isDebug = options.optBoolean(AF_IS_DEBUG, false);
@@ -298,13 +297,6 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		}
 
 		return newMap;
-	}
-
-	private boolean setSenderId(JSONArray parameters, CallbackContext callbackContext) throws JSONException {
-		String senderId = parameters.getString(0);
-		AppsFlyerLib.getInstance().enableUninstallTracking(senderId);
-		callbackContext.success(SUCCESS);
-		return true;
 	}
 
 	private boolean updateServerUninstallToken(JSONArray parameters, CallbackContext callbackContext) throws JSONException {

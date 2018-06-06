@@ -46,7 +46,6 @@
             exec(callbackMap.suc, callbackMap.err, "AppsFlyerPlugin", "resumeSDK", []);
         };
 
-
         AppsFlyer.prototype.setCurrencyCode = function (currencyId) {
             argscheck.checkArgs('S', 'AppsFlyer.setCurrencyCode', arguments);
             exec(null, null, "AppsFlyerPlugin", "setCurrencyCode", [currencyId]);
@@ -56,14 +55,7 @@
              argscheck.checkArgs('S', 'AppsFlyer.setAppUserId', arguments);
             exec(null, null, "AppsFlyerPlugin", "setAppUserId", [customerUserId]);
         };
-        AppsFlyer.prototype.setSenderId = function(senderId) {
-            argscheck.checkArgs('S', 'AppsFlyer.setSenderId', arguments);
-            exec(null, null, "AppsFlyerPlugin", "setSenderId", [senderId]);
-        };
-        // AppsFlyer.prototype.registerUninstall = function (token) {
-        //     argscheck.checkArgs('S', 'AppsFlyer.registerUninstall', arguments);
-        //     exec(null, null, "AppsFlyerPlugin", "registerUninstall", [token]);
-        // };
+
         AppsFlyer.prototype.getAppsFlyerUID = function (successCB) {
             argscheck.checkArgs('F', 'AppsFlyer.getAppsFlyerUID', arguments);
             exec(function (result) {

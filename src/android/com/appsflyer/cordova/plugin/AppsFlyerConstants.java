@@ -15,6 +15,7 @@ public class AppsFlyerConstants {
 
     final static String AF_IS_DEBUG = "isDebug";
     final static String AF_DEV_KEY = "devKey";
+    final static String AF_SENDER_ID = "senderId";
     final static String AF_CONVERSION_DATA = "onInstallConversionDataListener";
     final static String AF_ON_INSTALL_CONVERSION_DATA = "onInstallConversionDataN";
 
