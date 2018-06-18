@@ -83,7 +83,7 @@
         <header-file src="src/ios/AppsFlyerPlugin.h" />
         <source-file src="src/ios/AppsFlyerPlugin.m" />
 
-        <framework src="AppsFlyerFramework" type="podspec" spec="~> 4.7.11"/>
+        <framework src="AppsFlyerFramework" type="podspec" spec="~> 4.8"/>
 
         <framework src="AdSupport.framework" weak="true" />
         <framework src="iAd.framework" weak="true" />
