@@ -80,41 +80,41 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 	 * @param callbackContext
      */
 	private boolean initSdk(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-		AppsFlyerProperties.getInstance().set(AppsFlyerProperties.LAUNCH_PROTECT_ENABLED, false);
-		AppsFlyerLib instance = AppsFlyerLib.getInstance();
-
 		final JSONObject options = args.getJSONObject(0);
-		String devKey = options.optString(AF_DEV_KEY, "").trim();
-		boolean isConversionData = options.optBoolean(AF_CONVERSION_DATA, false);
-		boolean isDebug = options.optBoolean(AF_IS_DEBUG, false);
+		final String devKey = options.optString(AF_DEV_KEY, "").trim();
+		final boolean isConversionData = options.optBoolean(AF_CONVERSION_DATA, false);
+		final boolean isDebug = options.optBoolean(AF_IS_DEBUG, false);
+		final String senderId = options.optString(AF_SENDER_ID, "").trim();
 
 		if(devKey.equals("")){
 			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, NO_DEVKEY_FOUND));
 		} else {
-			String senderId = options.optString(AF_SENDER_ID, "").trim();
-			if(!senderId.equals("")){
-				instance.enableUninstallTracking(senderId);
-			}
+			cordova.getThreadPool().execute(new Runnable() {
+				public void run() {
+					AppsFlyerProperties.getInstance().set(AppsFlyerProperties.LAUNCH_PROTECT_ENABLED, false);
+					AppsFlyerLib instance = AppsFlyerLib.getInstance();
 
-			instance.setDebugLog(isDebug);
+					if(!senderId.equals("")){
+						instance.enableUninstallTracking(senderId);
+					}
+					instance.setDebugLog(isDebug);
 
-			if(isDebug == true){ Log.d("AppsFlyer", "Starting Tracking");}
-			trackAppLaunch();
+					trackAppLaunch();
 
-			instance.startTracking(AppsFlyerPlugin.this.cordova.getActivity().getApplication(), devKey);
+					instance.startTracking(cordova.getActivity().getApplication(), devKey);
 
+					if (isConversionData == true) {
+						if(mConversionListener == null){
+							mConversionListener = callbackContext;
+						}
 
-			if(isConversionData == true){
-				if(mConversionListener == null){
-					mConversionListener = callbackContext;
+						registerConversionListener(instance);
+						sendPluginNoResult(callbackContext);
+					} else {
+						callbackContext.success(SUCCESS);
+					}
 				}
-
-				registerConversionListener(instance);
-				sendPluginNoResult(callbackContext);
-			}
-			else{
-				callbackContext.success(SUCCESS);
-			}
+			});
 		}
 
 		return true;
