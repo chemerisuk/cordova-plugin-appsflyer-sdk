@@ -272,7 +272,7 @@ static NSString *const SUCCESS         = @"Success";
 - (BOOL) application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *_Nullable))restorationHandler
 {
     [[AppsFlyerTracker sharedTracker] continueUserActivity:userActivity restorationHandler:restorationHandler];
-    return YES;
+    return NO;
 }
 
 @end
