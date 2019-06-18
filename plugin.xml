@@ -28,9 +28,9 @@
     <keywords>cordova,appsflyer</keywords>
     <repo>https://github.com/AppsFlyerSDK/cordova-plugin-appsflyer-sdk.git</repo>
     <engines>
-        <engine name="cordova" version=">=6.0.0"/>
-        <engine name="cordova-android" version=">=6.0.0"/>
-        <engine name="cordova-ios" version=">=4.3.0"/>
+        <engine name="cordova" version=">=9.0.0"/>
+        <engine name="cordova-android" version=">=7.0.0"/>
+        <engine name="cordova-ios" version=">=5.0.0"/>
     </engines>
 
     <js-module src="www/appsflyer.js" name="appsflyer">
@@ -82,8 +82,15 @@
         </config-file>
         <header-file src="src/ios/AppsFlyerPlugin.h" />
         <source-file src="src/ios/AppsFlyerPlugin.m" />
-
-        <framework src="AppsFlyerFramework" type="podspec" spec="~> 4.8"/>
+      
+        <podspec>
+            <config>
+                <source url="https://github.com/CocoaPods/Specs.git"/>
+            </config>
+            <pods>
+                <pod name="AppsFlyerFramework" spec="~> 4.8" />
+            </pods>
+        </podspec>
 
         <framework src="AdSupport.framework" weak="true" />
         <framework src="iAd.framework" weak="true" />
