@@ -95,7 +95,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 					AppsFlyerLib instance = AppsFlyerLib.getInstance();
 
 					if(!senderId.equals("")){
-						instance.enableUninstallTracking(senderId);
+						instance.updateServerUninstallToken(cordova.getActivity().getApplicationContext(), senderId);
 					}
 					instance.setDebugLog(isDebug);
 
@@ -134,12 +134,12 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			}
 
 			@Override
-			public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
+			public void onConversionDataSuccess(Map<String, Object> conversionData) {
 				handleSuccess(AF_ON_INSTALL_CONVERSION_DATA_LOADED, conversionData);
 			}
 
 			@Override
-			public void onInstallConversionFailure(String errorMessage) {
+			public void onConversionDataFail(String errorMessage) {
 				handleError(AF_ON_INSTALL_CONVERSION_FAILURE, errorMessage);
 			}
 
@@ -159,13 +159,13 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 				}
 			}
 
-			private void handleSuccess(String eventType, Map<String, String> data){
+			private void handleSuccess(String eventType, Map eventData){
 				try {
 					JSONObject obj = new JSONObject();
 
 					obj.put("status", AF_SUCCESS);
 					obj.put("type", eventType);
-					obj.put("data", new JSONObject(data));
+					obj.put("data", new JSONObject(eventData));
 
 					sendEvent(obj);
 				} catch (JSONException e) {
@@ -245,7 +245,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			if(customeUserId == null || customeUserId.length()==0){
 				return true; //TODO error
 			}
-        	AppsFlyerLib.getInstance().setAppUserId(customeUserId);
+        	AppsFlyerLib.getInstance().setCustomerUserId(customeUserId);
         	PluginResult r = new PluginResult(PluginResult.Status.OK);
         	r.setKeepCallback(false);
         	callbackContext.sendPluginResult(r);

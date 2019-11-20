@@ -67,7 +67,7 @@
         <source-file src="src/android/com/appsflyer/cordova/plugin/AppsFlyerPlugin.java" target-dir="src/com/appsflyer/cordova/plugin" />
         <source-file src="src/android/com/appsflyer/cordova/plugin/AppsFlyerConstants.java" target-dir="src/com/appsflyer/cordova/plugin" />
 
-        <framework src="com.appsflyer:af-android-sdk:4.10.+@aar"/>
+        <framework src="com.appsflyer:af-android-sdk:5.0.+@aar"/>
         <framework src="com.android.installreferrer:installreferrer:1.0"/>
     </platform>
 
@@ -88,7 +88,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git"/>
             </config>
             <pods>
-                <pod name="AppsFlyerFramework" spec="~> 4.10" />
+                <pod name="AppsFlyerFramework" spec="~> 5.0" />
             </pods>
         </podspec>
 
