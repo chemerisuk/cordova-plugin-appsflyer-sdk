@@ -1,32 +1,70 @@
 package com.appsflyer.cordova.plugin;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.util.Log;
 
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.PluginResult;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.AppsFlyerProperties;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.os.Build;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import static com.appsflyer.cordova.plugin.AppsFlyerConstants.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import static by.chemerisuk.cordova.firebase.FirebaseMessagingPluginService.ACTION_FCM_TOKEN;
+import static by.chemerisuk.cordova.firebase.FirebaseMessagingPluginService.EXTRA_FCM_TOKEN;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_CONVERSION_DATA;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_DEV_KEY;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_FAILURE;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_IS_DEBUG;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_ON_APP_OPEN_ATTRIBUTION;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_ON_ATTRIBUTION_FAILURE;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_ON_INSTALL_CONVERSION_DATA_LOADED;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_ON_INSTALL_CONVERSION_FAILURE;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_SENDER_ID;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.AF_SUCCESS;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.NO_DEVKEY_FOUND;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.NO_EVENT_NAME_FOUND;
+import static com.appsflyer.cordova.plugin.AppsFlyerConstants.SUCCESS;
 
 public class AppsFlyerPlugin extends CordovaPlugin {
 
 	private CallbackContext mConversionListener = null;
+	private LocalBroadcastManager broadcastManager;
+
+	@Override
+	protected void pluginInitialize() {
+		broadcastManager = LocalBroadcastManager.getInstance(cordova.getActivity());
+		broadcastManager.registerReceiver(tokenReceiver, new IntentFilter(ACTION_FCM_TOKEN));
+	}
+
+	@Override
+	public void onDestroy() {
+		broadcastManager.unregisterReceiver(tokenReceiver);
+	}
+
+	private BroadcastReceiver tokenReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String token = intent.getStringExtra(EXTRA_FCM_TOKEN);
+			if (token != null) {
+				Context appContext = cordova.getActivity().getApplicationContext();
+				AppsFlyerLib.getInstance().updateServerUninstallToken(appContext, token);
+			}
+		}
+	};
 
 	/**
 	 * Called when the activity receives a new intent.

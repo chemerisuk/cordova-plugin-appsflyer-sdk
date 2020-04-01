@@ -42,7 +42,7 @@
     </js-module>
 
 
-
+    <dependency id="cordova-plugin-firebase-messaging" version="~4.3.0"/>
 
     <!-- android -->
     <platform name="android">
